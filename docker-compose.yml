@@ -1,0 +1,92 @@
+version: '3'
+services:
+
+    # База данных
+    db.postgresql:
+        build:
+            context: ./servers/postgresql
+            dockerfile: Dockerfile
+        volumes:
+            - ./volumes/db/postgresql:/var/lib/postgresql
+        ports:
+            - "5432:5432"
+        environment:
+            - NAME=db.postgresql
+        env_file:
+            -   ./.env
+        extra_hosts:
+            - 'host.docker.internal:host-gateway'
+        networks:
+            - laravel_network
+
+
+
+    # Redis сервер для обработки очередей
+    redis.queue:
+        build:
+            context: ./servers/redis
+            dockerfile: Dockerfile
+        volumes:
+            - ./volumes/redis/queue:/data
+        ports:
+            - "6379:6379"
+        extra_hosts:
+            - 'host.docker.internal:host-gateway'
+        networks:
+            - laravel_network
+
+    # Event.Router - центральный обработчик событий на проекте
+    event.router:
+        build:
+            context: ./jobs/event-router
+            dockerfile: Dockerfile
+        command: sh -c "/var/www/html/artisan queue:work --queue=event.site"
+        volumes:
+            - './jobs/event-router/src:/var/www/html'
+        env_file:
+            - .env
+        extra_hosts:
+            - 'host.docker.internal:host-gateway'
+        networks:
+            - laravel_network
+
+
+    api.example:
+        build:
+            context: ./api/service-example
+            dockerfile: Dockerfile
+        volumes:
+            - './api/service-example/src:/var/www/html'
+        ports:
+            - "88:80"
+        environment:
+            - NAME=api.example
+        env_file:
+            - .env
+        extra_hosts:
+            - 'host.docker.internal:host-gateway'
+        networks:
+            - laravel_network
+
+    # Роутер на основе nginx
+    # Он принимает запросы и передает их соответствующему сервису
+    nginx:
+        build:
+            context: ./servers/nginx
+            dockerfile: Dockerfile
+        volumes:
+            - ./servers/nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+            - ./volumes/nginx/log:/var/log/nginx
+        ports:
+            - "80:80"
+        depends_on:
+            - api.example
+        extra_hosts:
+            - 'host.docker.internal:host-gateway'
+        networks:
+            - laravel_network
+
+
+networks:
+    laravel_network:
+        driver: bridge
