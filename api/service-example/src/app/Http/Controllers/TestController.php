@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 
+use App\Events\EventApiSendEvent;
 use Illuminate\Support\Facades\Log;
 
 class TestController extends Controller
@@ -11,15 +12,17 @@ class TestController extends Controller
         $eventName = "MyEventName";
         $eventBody = ["data1" => "value1", "data2" => "value2"];
 
-        $job = new \App\Jobs\JobSendEventSite($eventName, $eventBody);
+        event(new EventApiSendEvent($eventName, $eventBody));
+        EventApiSendEvent::dispatch($eventName, $eventBody);
 
-        // Log::debug("JobId: " . $job->job->getJobId());
+//         $job = new \App\Jobs\JobSendEventSite($eventName, $eventBody);
+//
+//         dispatch($job)
+//             ->onConnection('redis')
+//             ->onQueue('event.site');
 
-        dispatch($job)->onConnection('redis')->onQueue('event.site');
+
         return "Hello World";
-        // Storage::disk('minio')->put('avatars/1.txt', 'test');
-        // Storage::put('posts/1/test.txt', 'test');
-        // return env('MINIO_USER', 'Нет такой переменной');
     }
 
 }

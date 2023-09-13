@@ -134,16 +134,16 @@ return [
             'username' => env('REDIS_USERNAME'),
             'password' => env('REDIS_PASSWORD'),
             'port' => env('REDIS_PORT', '6379'),
-            'database' => env('REDIS_DB', '0'),
+            'database' => env('REDIS_DB', '11'),
         ],
 
         'queues' => [
             'url' => env('REDIS_QUEUES_URL'),
-            'host' => env('REDIS_QUEUES_HOST', '127.0.0.1'),
+            'host' => env('REDIS_QUEUES_HOST', 'redis.queue'),
             'username' => env('REDIS_QUEUES_USERNAME'),
             'password' => env('REDIS_QUEUES_PASSWORD'),
             'port' => env('REDIS_QUEUES_PORT', '6379'),
-            'database' => env('REDIS_QUEUES_DB', '0'),
+            'database' => env('REDIS_QUEUES_DB', '10'),
         ],
 
         'cache' => [
