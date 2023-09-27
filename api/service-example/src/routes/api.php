@@ -18,3 +18,5 @@ use Illuminate\Support\Facades\Route;
 
 
 Route::get('examples', [\App\Http\Controllers\TestController::class,'test'])->name('test');
+Route::get('examples/job', [\App\Http\Controllers\Jobs\ParseDBJobController::class,'startJob'])
+    ->name('startJob');

@@ -2,11 +2,8 @@
 
 namespace App\Jobs;
 
-use App\Mail\ParseDB\MailParseDBJobSuccess;
-use app\Services\Interfaces\ISocketService;
-use App\Services\SocketService;
+use app\Mail\ParseDB\MailParseDBJobSuccess;
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldBeUnique;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
@@ -39,11 +36,11 @@ class ParseDBJob implements ShouldQueue
         Log::debug($this->jobId . " : " . $this->someVal);
 
         // Можно отправить письмо ???
-        // Mail::to('oleksandr.nykytin@tech.lab325.com')->send(new MailParseDBJobSuccess());
+         Mail::to('oleksandr.nykytin@tech.lab325.com')->send(new MailParseDBJobSuccess());
 
         // Можно ли отправить сообщение на фронт
-        $socketService = new SocketService();
-        $socketService->emit("I finish", 'job.say');
+//        $socketService = new SocketService();
+//        $socketService->emit("I finish", 'job.say');
 
 
 
