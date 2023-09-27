@@ -15,9 +15,10 @@ class MailParseDBJobSuccess extends Mailable
     /**
      * Create a new message instance.
      */
-    public function __construct()
+    protected $template_name;
+    public function __construct(string $template_name = 'emails.jobs.parse_db.success')
     {
-        //
+        $this->template_name = $template_name;
     }
 
     /**
@@ -36,8 +37,8 @@ class MailParseDBJobSuccess extends Mailable
     public function content(): Content
     {
         return new Content(
-            view: 'emails.jobs.parse_db.success',
-            text: 'emails.jobs.parse_db.success_text',
+            view: $this->template_name,
+            text: $this->template_name . '_text',
         );
     }
 
